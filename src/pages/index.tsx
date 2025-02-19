@@ -1,32 +1,3 @@
-// import { useEffect, useState } from 'react';
-// import dynamic from 'next/dynamic';
-
-// // Dynamically import Spline with no SSR
-// const SplineComponent = dynamic(() => import('@splinetool/react-spline'), {
-//   ssr: false,
-//   loading: () => <div>Loading 3D model...</div>
-// });
-
-// export default function Home() {
-//   const [isClient, setIsClient] = useState(false);
-
-//   useEffect(() => {
-//     setIsClient(true);
-//   }, []);
-
-//   if (!isClient) return <div>Loading...</div>;
-
-//   return (
-//     <main >
-//       <SplineComponent
-//         scene="https://prod.spline.design/T5PkQxXsLO5s-Jgh/scene.splinecode" 
-//         />
-//     </main>
-//   );
-// }
-
-
-
 import React from 'react';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -55,7 +26,7 @@ export default function Home() {
       color: 'white',
       fontFamily: "'Space Grotesk', sans-serif"
     }}>
-      <div style={{
+    <div style={{
         position: 'absolute',
         zIndex: 10,
         padding: '2rem',
