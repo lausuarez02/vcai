@@ -86,6 +86,25 @@ export default function Home() {
           display: none !important;
         }
       `}</style>
+      {/* Watermark cover */}
+      <div style={{
+        position: 'fixed',
+        bottom: '17px',
+        right: '12px',
+        zIndex: 1000,
+        backgroundColor: 'rgba(0, 0, 0, 1)',
+        padding: '8px 12px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        backdropFilter: 'blur(5px)',
+        width: '150px',
+        height: '38px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        Built by VCAI Labs
+      </div>
       <SplineComponent
         scene="https://prod.spline.design/T5PkQxXsLO5s-Jgh/scene.splinecode" 
         style={{ 
