@@ -99,7 +99,7 @@ export default function Home() {
           }}>
             🎯 Office Hours
           </a>
-          <a href="https://twitter.com/vcailabs" target="_blank" style={{
+          <a href="https://twitter.com/vcaiswarm" target="_blank" style={{
             padding: '0.8rem 1.5rem',
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
             border: '1px solid rgba(255, 255, 255, 0.2)',
