@@ -1,15 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import BackgroundMusic from '../../components/BackgroundMusic';
 
 const SplineComponent = dynamic(() => import('@splinetool/react-spline'), {
   ssr: false,
   loading: () => <div>Loading 3D model...</div>
 });
 
-export default function Pitch() {
+export default function Form() {
   const [isClient, setIsClient] = useState(false);
+  const [formData, setFormData] = useState({
+    founderName: '',
+    projectName: '',
+    email: '',
+    xHandle: '',
+    description: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/submit-pitch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({
+          founderName: '',
+          projectName: '',
+          email: '',
+          xHandle: '',
+          description: ''
+        });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -20,10 +67,7 @@ export default function Pitch() {
   return (
     <>
       <Head>
-        <link
-          href="https://fonts.cdnfonts.com/css/basement-grotesque"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.cdnfonts.com/css/basement-grotesque" rel="stylesheet" />
       </Head>
       <main style={{ 
         width: '100vw', 
@@ -39,26 +83,14 @@ export default function Pitch() {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          maxWidth: '600px',
+          maxWidth: '500px',
           width: '90%',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           backdropFilter: 'blur(10px)',
           borderRadius: '20px',
           padding: '2rem',
-          transition: 'all 0.3s ease',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-          overflow: 'hidden'
+          border: '1px solid rgba(255, 255, 255, 0.2)'
         }}>
-          <div style={{
-            position: 'absolute',
-            top: '-50%',
-            left: '-50%',
-            width: '200%',
-            height: '200%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
-            pointerEvents: 'none'
-          }}/>
           <h1 style={{
             fontSize: '2rem',
             marginBottom: '1.5rem',
@@ -69,14 +101,34 @@ export default function Pitch() {
           }}>
             Pitch to SwarmFund
           </h1>
-          <form style={{
+          <form onSubmit={handleSubmit} style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '1rem'
           }}>
             <input 
               type="text"
-              placeholder="Company Name"
+              name="founderName"
+              placeholder="Your Name"
+              value={formData.founderName}
+              onChange={handleChange}
+              required
+              style={{
+                padding: '1rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '10px',
+                color: 'white',
+                fontSize: '1rem'
+              }}
+            />
+            <input 
+              type="text"
+              name="projectName"
+              placeholder="Project Name"
+              value={formData.projectName}
+              onChange={handleChange}
+              required
               style={{
                 padding: '1rem',
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -88,7 +140,27 @@ export default function Pitch() {
             />
             <input 
               type="email"
+              name="email"
               placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              style={{
+                padding: '1rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '10px',
+                color: 'white',
+                fontSize: '1rem'
+              }}
+            />
+            <input 
+              type="text"
+              name="xHandle"
+              placeholder="X/Twitter Handle"
+              value={formData.xHandle}
+              onChange={handleChange}
+              required
               style={{
                 padding: '1rem',
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -99,7 +171,11 @@ export default function Pitch() {
               }}
             />
             <textarea 
-              placeholder="Tell us about your startup (1-2 paragraphs)"
+              name="description"
+              placeholder="Tell us about your project"
+              value={formData.description}
+              onChange={handleChange}
+              required
               rows={4}
               style={{
                 padding: '1rem',
@@ -111,24 +187,42 @@ export default function Pitch() {
                 resize: 'none'
               }}
             />
-            <button style={{
-              padding: '1rem',
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '10px',
-              color: 'white',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}>
-              Submit Pitch
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              style={{
+                padding: '1rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '10px',
+                color: 'white',
+                fontSize: '1rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                textTransform: 'uppercase',
+                letterSpacing: '-0.01em',
+                fontWeight: 500
+              }}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Pitch'}
             </button>
+            
+            {submitStatus === 'success' && (
+              <p style={{ color: '#4ade80', marginTop: '1rem', textAlign: 'center' }}>
+                Thanks! We'll be in touch soon.
+              </p>
+            )}
+            {submitStatus === 'error' && (
+              <p style={{ color: '#ef4444', marginTop: '1rem', textAlign: 'center' }}>
+                Something went wrong. Please try again.
+              </p>
+            )}
           </form>
         </div>
 
         <div style={{
           position: 'fixed',
-          bottom: '17px',
+          bottom: '8px',
           right: '12px',
           zIndex: 1000,
           backgroundColor: 'rgba(0, 0, 0, 1)',
@@ -151,7 +245,6 @@ export default function Pitch() {
             pointerEvents: 'none'
           }}
         />
-        <BackgroundMusic />
       </main>
     </>
   );

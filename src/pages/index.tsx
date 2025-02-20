@@ -83,7 +83,7 @@ export default function Home() {
                 textTransform: 'uppercase',
                 fontSize: '0.9rem'
               }}>
-                🎯 Office Hours
+                🚀 Pitch Now
               </a>
               <a href="https://twitter.com/swarmfun" target="_blank" style={{
                 padding: '0.8rem 1.5rem',
