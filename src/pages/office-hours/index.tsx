@@ -81,9 +81,9 @@ export default function OfficeHours() {
         bottom: '8px',
         right: '12px',
         zIndex: 1000,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 1)',
         padding: '8px 12px',
-        borderRadius: '4px',
+        borderRadius: '50px',
         fontSize: '12px',
         backdropFilter: 'blur(5px)',
         width: '150px',
@@ -92,7 +92,7 @@ export default function OfficeHours() {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        Built by VCAI Labs
+        Built by SwarmFund
       </div>
 
       <SplineComponent
