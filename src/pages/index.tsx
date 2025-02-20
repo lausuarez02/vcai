@@ -91,7 +91,24 @@ export default function Home() {
             }}>
               🚀 Pitch Now
             </a>
-            <a href="https://twitter.com/swarmfun" target="_blank" style={{
+            <a href="/whitepaper.pdf" target="_blank" style={{
+              padding: '0.8rem 1.5rem',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '8px',
+              color: 'white',
+              textDecoration: 'none',
+              transition: 'all 0.3s ease',
+              backdropFilter: 'blur(10px)',
+              fontWeight: 500,
+              letterSpacing: '-0.01em',
+              textTransform: 'uppercase',
+              fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+              textAlign: 'center'
+            }}>
+              📄 Whitepaper
+            </a>
+            <a href="https://twitter.com/swarmfund" target="_blank" style={{
               padding: '0.8rem 1.5rem',
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
               border: '1px solid rgba(255, 255, 255, 0.2)',
