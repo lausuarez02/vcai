@@ -1,6 +1,9 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { SuccessModal } from '@/components/SuccessModal';
 
 const SplineComponent = dynamic(() => import('@splinetool/react-spline'), {
   ssr: false,
@@ -8,7 +11,6 @@ const SplineComponent = dynamic(() => import('@splinetool/react-spline'), {
 });
 
 export default function Form() {
-  const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState({
     founderName: '',
     projectName: '',
@@ -18,6 +20,7 @@ export default function Form() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ export default function Form() {
 
       if (response.ok) {
         setSubmitStatus('success');
+        setShowSuccessModal(true);
         setFormData({
           founderName: '',
           projectName: '',
@@ -58,17 +62,12 @@ export default function Form() {
     }));
   };
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return <div>Loading...</div>;
-
   return (
     <>
       <Head>
         <link href="https://fonts.cdnfonts.com/css/basement-grotesque" rel="stylesheet" />
       </Head>
+      
       <main style={{ 
         width: '100vw', 
         height: '100vh', 
@@ -77,148 +76,150 @@ export default function Form() {
         color: 'white',
         fontFamily: "'Basement Grotesque', sans-serif"
       }}>
-        <div style={{
-          position: 'absolute',
-          zIndex: 10,
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          maxWidth: '500px',
-          width: '90%',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '20px',
-          padding: '2rem',
-          border: '1px solid rgba(255, 255, 255, 0.2)'
-        }}>
-          <h1 style={{
-            fontSize: '2rem',
-            marginBottom: '1.5rem',
-            textAlign: 'center',
-            fontWeight: '700',
-            letterSpacing: '-0.02em',
-            textTransform: 'uppercase'
+        {!showSuccessModal && (
+          <div style={{
+            position: 'absolute',
+            zIndex: 10,
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            maxWidth: '500px',
+            width: '90%',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '20px',
+            padding: '2rem',
+            border: '1px solid rgba(255, 255, 255, 0.2)'
           }}>
-            Pitch to SwarmFund
-          </h1>
-          <form onSubmit={handleSubmit} style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem'
-          }}>
-            <input 
-              type="text"
-              name="founderName"
-              placeholder="Your Name"
-              value={formData.founderName}
-              onChange={handleChange}
-              required
-              style={{
-                padding: '1rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                color: 'white',
-                fontSize: '1rem'
-              }}
-            />
-            <input 
-              type="text"
-              name="projectName"
-              placeholder="Project Name"
-              value={formData.projectName}
-              onChange={handleChange}
-              required
-              style={{
-                padding: '1rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                color: 'white',
-                fontSize: '1rem'
-              }}
-            />
-            <input 
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={{
-                padding: '1rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                color: 'white',
-                fontSize: '1rem'
-              }}
-            />
-            <input 
-              type="text"
-              name="xHandle"
-              placeholder="X/Twitter Handle"
-              value={formData.xHandle}
-              onChange={handleChange}
-              required
-              style={{
-                padding: '1rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                color: 'white',
-                fontSize: '1rem'
-              }}
-            />
-            <textarea 
-              name="description"
-              placeholder="Tell us about your project"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              rows={4}
-              style={{
-                padding: '1rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                color: 'white',
-                fontSize: '1rem',
-                resize: 'none'
-              }}
-            />
-            <button 
-              type="submit" 
-              disabled={isSubmitting}
-              style={{
-                padding: '1rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '10px',
-                color: 'white',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                textTransform: 'uppercase',
-                letterSpacing: '-0.01em',
-                fontWeight: 500
-              }}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Pitch'}
-            </button>
-            
-            {submitStatus === 'success' && (
-              <p style={{ color: '#4ade80', marginTop: '1rem', textAlign: 'center' }}>
-                Thanks! We'll be in touch soon.
-              </p>
-            )}
-            {submitStatus === 'error' && (
-              <p style={{ color: '#ef4444', marginTop: '1rem', textAlign: 'center' }}>
-                Something went wrong. Please try again.
-              </p>
-            )}
-          </form>
-        </div>
+            <h1 style={{
+              fontSize: '2rem',
+              marginBottom: '1.5rem',
+              textAlign: 'center',
+              fontWeight: '700',
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase'
+            }}>
+              Pitch to SwarmFund
+            </h1>
+            <form onSubmit={handleSubmit} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem'
+            }}>
+              <input 
+                type="text"
+                name="founderName"
+                placeholder="Your Name"
+                value={formData.founderName}
+                onChange={handleChange}
+                required
+                style={{
+                  padding: '1rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '1rem'
+                }}
+              />
+              <input 
+                type="text"
+                name="projectName"
+                placeholder="Project Name"
+                value={formData.projectName}
+                onChange={handleChange}
+                required
+                style={{
+                  padding: '1rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '1rem'
+                }}
+              />
+              <input 
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                style={{
+                  padding: '1rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '1rem'
+                }}
+              />
+              <input 
+                type="text"
+                name="xHandle"
+                placeholder="X/Twitter Handle"
+                value={formData.xHandle}
+                onChange={handleChange}
+                required
+                style={{
+                  padding: '1rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '1rem'
+                }}
+              />
+              <textarea 
+                name="description"
+                placeholder="Tell us about your project"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                rows={4}
+                style={{
+                  padding: '1rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '1rem',
+                  resize: 'none'
+                }}
+              />
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                style={{
+                  padding: '1rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  textTransform: 'uppercase',
+                  letterSpacing: '-0.01em',
+                  fontWeight: 500
+                }}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Pitch'}
+              </button>
+              
+              {submitStatus === 'success' && (
+                <p style={{ color: '#4ade80', marginTop: '1rem', textAlign: 'center' }}>
+                  Thanks! We'll be in touch soon.
+                </p>
+              )}
+              {submitStatus === 'error' && (
+                <p style={{ color: '#ef4444', marginTop: '1rem', textAlign: 'center' }}>
+                  Something went wrong. Please try again.
+                </p>
+              )}
+            </form>
+          </div>
+        )}
 
         <div style={{
           position: 'fixed',
@@ -246,6 +247,11 @@ export default function Form() {
           }}
         />
       </main>
+
+      <SuccessModal 
+        isOpen={showSuccessModal} 
+        onClose={() => setShowSuccessModal(false)} 
+      />
     </>
   );
 }
